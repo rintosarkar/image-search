@@ -4,15 +4,15 @@ A simple starter project for playing around with Tailwind in a proper PostCSS en
 
 To get started:
 
-##1. Clone the repository:
+1. Clone the repository:
 
-   ```bash
-   git clone https://bitbucket.org/hemaet/tailwind-init.git
+```bash
+ git clone https://hemaet@bitbucket.org/hemaet/tailwind-init.git
 
-   cd tailwind-init
-   ```
+ cd tailwind-init
+```
 
-##2. Install the dependencies:
+2. Install the dependencies:
 
    ```bash
    # Using npm
@@ -22,7 +22,7 @@ To get started:
    yarn
    ```
 
-##3. Start the development server:
+3. Start the development server:
 
    ```bash
    # Using npm
