@@ -7,7 +7,7 @@ To get started:
 1. Clone the repository:
 
    ```bash
-  git clone https://bitbucket.org/hemaet/tailwind-init.git
+   git clone https://bitbucket.org/hemaet/tailwind-init.git
 
    cd tailwind-init
    ```
