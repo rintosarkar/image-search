@@ -13,7 +13,13 @@ To get started:
 ```
 
 2. Install the dependencies:
+```bash
+# Using npm
+npm install
 
+#Using Yarn
+yarn
+```
 
 3. Start the development server:
 
