@@ -5,7 +5,9 @@
         "production": "cross-env NODE_ENV=production postcss public/tailwind.css -o public/build/tailwind.css",
         "start": "npm run serve"
     },
-    "dependencies": {},
+    "dependencies": {
+        "alpinejs": "^2.8.2"
+    },
     "devDependencies": {
         "autoprefixer": "^10.2.4",
         "concurrently": "^5.3.0",
