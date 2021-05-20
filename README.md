@@ -4,6 +4,9 @@ A simple starter project for playing around with Tailwind in a proper PostCSS en
 
 To get started:
 
+**See Demo
+[Demo](https://dazzling-meninsky-77514d.netlify.app/)
+
 1. Clone the repository:
 
 ```bash
