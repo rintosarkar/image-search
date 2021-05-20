@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="stylesheet" href="/build/tailwind.css">
+    <title>Image Search From PIXABAYs</title>
+</head>
+
+<body class="antialiased">
+    <div class="main" x-data="searchModule">
+        <div class="text-gray-200 bg-gray-800 bg-cover bg-blend-overlay" :style="cover">
+            <h1 class="text-3xl text-center pt-11">Image Search From PIXABAY
+            </h1>
+            <div class="flex flex-col p-12 mx-auto space-y-3 w-96">
+                <input @keydown.enter="getImages()" x-model="searchKey" type="text" class="h-10 pl-3 text-gray-700 border border-gray-200 rounded-md focus:outline-none" placeholder="Type Keyword and hit Enter">
+                <button @click="getImages()" class="h-10 font-bold text-white bg-green-400 rounded-md focus:outline-none">Search</button>
+                <p>* Powered by pixabay</p>
+            </div>
+        </div>
+        <div class="h-auto p-5 text-center text-white">
+
+            <!-- <p class="text-left bg-gray-500" x-text="modal"></p> -->
+
+
+            <template x-for="(image,index) in images" class="flex flex-row space-x-3 space-y-2 mt-15">
+                <div class="inline-block">
+                  <a @click="$dispatch('img-modal', { allImages:images, imgModalSrc: image.largeImageURL, imgModalDesc: image.tags, likes:image.likes, downloads:image.downloads, comments:image.comments, favorites:image.favorites, user:image.user })" class="cursor-pointer" >
+                    <img class="inline-block h-64 p-3 w-96"  :src="image.webformatURL" :title="image.tags" alt="" loading="lazy">
+                  </a>
+                </div>
+            </template>
+        </div>
+
+    </div>
+
+    <div x-data="modalImage">
+        <template @img-modal.window="imgModal = true; allImages:$event.detail.images; imgModalSrc = $event.detail.imgModalSrc; imgModalDesc = $event.detail.imgModalDesc; likes=$event.detail.likes; downloads=$event.detail.downloads; comments=$event.detail.comments; favorites=$event.detail.favorites; user=$event.detail.user;"
+            x-if="imgModal">
+          <div x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-90" x-on:click.away="imgModalSrc = ''" class="fixed inset-0 z-50 flex items-center justify-center w-full p-2 overflow-hidden bg-black bg-opacity-75 h-100">
+            <div @click.away="imgModal = ''" class="flex flex-col max-h-full overflow-auto max-w-7xl">
+              <div class="z-50">
+                <button @click="imgModal = ''" class="float-right pt-2 pr-2 outline-none focus:outline-none">
+                  <svg class="text-white fill-current " xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                    <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z">
+                    </path>
+                  </svg>
+                </button>
+                <!-- <button @click="nextImage(allImages)" class="bg-red-500">Next</button>
+                <button class="bg-red-500">Pre</button> -->
+                
+              </div>
+              
+              <div class="p-2">
+                <img :alt="imgModalSrc" class="object-contain w-full h-1/2-screen" :src="imgModalSrc" loading="lazy">
+                <p x-text="imgModalDesc" class="text-center text-white"></p>
+                <div class="absolute flex flex-row space-x-5 space-y-0 md:space-x-0 top-10 md:top-20 md:space-y-5 md:flex-col md:left-40">
+                    <div class="relative flex items-center justify-center w-24 h-10 px-2 space-x-2 text-white bg-blue-500" >
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+                      <p x-text="convertLikes(likes)"></p>
+                  </div>
+                  <div class="relative flex items-center justify-center w-24 h-10 px-2 space-x-2 text-white bg-green-500" >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    <p x-text="convertLikes(downloads)"></p>
+                  </div>
+                  <div class="relative flex items-center justify-center w-24 h-10 px-2 space-x-2 text-white bg-purple-500" >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                    <p x-text="convertLikes(comments)"></p>
+                  </div>
+                  <div class="relative flex items-center justify-center w-24 h-10 px-2 space-x-2 text-white bg-pink-500" >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                    <p x-text="convertLikes(favorites)"></p>
+                  </div>
+                  <div class="relative flex items-center justify-center w-24 h-10 px-2 space-x-2 text-white bg-red-500" >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p x-text="user" class="truncate"></p>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script>
+        const searchModule = {
+            apiKey: '446376-3cb74bf737ef0b737968310c6',
+            apiUrl: 'https://pixabay.com/api?image_type=photo&orientation=horizontal&per_page=50',
+            accessKey: 'wa-tcHndp_cnkKk0GxL8I8P4z0EISz7LNdD2PonneV4',
+            secretKey: '2cP103k7FYabDNGK_i8HPfilXs9l_H2_LKPSxXVaF2k',
+            searchKey: '',
+            modal: false,
+            images: [],
+            cover: "",
+            getImages() {
+                const requestUrl = `${this.apiUrl}&q=${this.searchKey}&key=${this.apiKey}`
+                const count = Math.floor(Math.random() * (49 - 0 + 1)) + 0;
+                fetch(requestUrl)
+                    .then(res => res.json())
+                    .then(data => {
+                        this.images = data.hits
+                        this.cover = "background-image: url('" + data.hits[count].largeImageURL + "');"
+                    })
+
+                console.log(count)
+
+
+            }
+        }
+
+        const modalImage = {
+            imgModal: false,
+            imgModalSrc: '',
+            imgModalDesc: '',
+            // likes: '',
+            allImages: [],
+            nextImage(ai) {
+                const keys = Object.keys(ai)
+                console.log(this.likes)
+
+            },
+            convertLikes(likes) {
+                if (likes < 1000) {
+                    return likes;
+                } else {
+                    return (likes / 1000).toFixed(2) + 'K'
+                }
+
+            }
+        }
+    </script>
+
+
+
+
+
+
+
+
+</body>
+
+</html
